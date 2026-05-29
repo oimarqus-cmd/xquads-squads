@@ -65,6 +65,9 @@ export default function DashboardPage() {
     { name: 'Empty', value: stats.emptySquads },
   ];
 
+  const cardAccents = stats.tagDistribution.map(t => tagChartColor(t.name, isDark));
+  const accent = i => cardAccents[i % cardAccents.length];
+
   return (
     <div className="dashboard">
       <div className="page-header">
@@ -72,12 +75,12 @@ export default function DashboardPage() {
       </div>
 
       <div className="stat-grid">
-        <StatCard label="Total Squads" value={stats.totalSquads} />
-        <StatCard label="Total Members" value={stats.totalMembers} />
-        <StatCard label="Avg Members / Squad" value={stats.avgMembers} />
-        <StatCard label="Empty Squads" value={stats.emptySquads} sub="squads with no members" />
-        <StatCard label="Unique Tags" value={stats.totalTags} accent={stats.tagDistribution[0] ? tagChartColor(stats.tagDistribution[0].name, isDark) : undefined} />
-        <StatCard label="Tagged Squads" value={stats.taggedSquads} sub={stats.totalSquads > 0 ? `${Math.round(stats.taggedSquads / stats.totalSquads * 100)}% of squads` : ''} accent={stats.tagDistribution[1] ? tagChartColor(stats.tagDistribution[1].name, isDark) : undefined} />
+        <StatCard label="Total Squads" value={stats.totalSquads} accent={accent(0)} />
+        <StatCard label="Total Members" value={stats.totalMembers} accent={accent(1)} />
+        <StatCard label="Avg Members / Squad" value={stats.avgMembers} accent={accent(2)} />
+        <StatCard label="Empty Squads" value={stats.emptySquads} sub="squads with no members" accent={accent(3)} />
+        <StatCard label="Unique Tags" value={stats.totalTags} accent={accent(4)} />
+        <StatCard label="Tagged Squads" value={stats.taggedSquads} sub={stats.totalSquads > 0 ? `${Math.round(stats.taggedSquads / stats.totalSquads * 100)}% of squads` : ''} accent={accent(5)} />
         {stats.topTag && <StatCard label="Top Tag" value={stats.topTag.name} sub={`${stats.topTag.squads} squad${stats.topTag.squads !== 1 ? 's' : ''}`} accent={tagChartColor(stats.topTag.name, isDark)} />}
       </div>
 
