@@ -18,7 +18,7 @@ const PURPLE_SHADES = ['#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#
 function StatCard({ label, value, sub }) {
   return (
     <div className="stat-card">
-      <span className="stat-value">{value}</span>
+      <span className={`stat-value${typeof value === 'string' ? ' text' : ''}`}>{value}</span>
       <span className="stat-label">{label}</span>
       {sub && <span className="stat-sub">{sub}</span>}
     </div>
@@ -76,6 +76,9 @@ export default function DashboardPage() {
         <StatCard label="Total Members" value={stats.totalMembers} />
         <StatCard label="Avg Members / Squad" value={stats.avgMembers} />
         <StatCard label="Empty Squads" value={stats.emptySquads} sub="squads with no members" />
+        <StatCard label="Unique Tags" value={stats.totalTags} />
+        <StatCard label="Tagged Squads" value={stats.taggedSquads} sub={stats.totalSquads > 0 ? `${Math.round(stats.taggedSquads / stats.totalSquads * 100)}% of squads` : ''} />
+        {stats.topTag && <StatCard label="Top Tag" value={stats.topTag.name} sub={`${stats.topTag.squads} squad${stats.topTag.squads !== 1 ? 's' : ''}`} />}
       </div>
 
       <div className="charts-row">
