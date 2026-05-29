@@ -19,42 +19,53 @@ function Highlight({ text, query }) {
   );
 }
 
-function InlineEdit({ value, onSave, className }) {
+function InlineEdit({ value, onSave, className, multiline = false, placeholder = '' }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef(null);
 
-  useEffect(() => { if (editing) inputRef.current?.focus(); }, [editing]);
+  useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus();
+      if (multiline) {
+        inputRef.current.style.height = 'auto';
+        inputRef.current.style.height = inputRef.current.scrollHeight + 'px';
+      }
+    }
+  }, [editing, multiline]);
 
   function start() { setDraft(value); setEditing(true); }
 
   function save() {
     const trimmed = draft.trim();
-    if (trimmed && trimmed !== value) onSave(trimmed);
+    if (trimmed !== value) onSave(trimmed);
     setEditing(false);
   }
 
   function onKey(e) {
-    if (e.key === 'Enter') save();
+    if (e.key === 'Enter' && !multiline) { e.preventDefault(); save(); }
     if (e.key === 'Escape') setEditing(false);
   }
 
   if (editing) {
+    const Tag = multiline ? 'textarea' : 'input';
     return (
-      <input
+      <Tag
         ref={inputRef}
         className={`inline-input ${className}`}
         value={draft}
+        placeholder={placeholder}
         onChange={e => setDraft(e.target.value)}
         onBlur={save}
         onKeyDown={onKey}
+        rows={multiline ? 2 : undefined}
       />
     );
   }
 
   return (
     <span className={`inline-value ${className}`} onClick={start} title="Click to edit">
-      {value}
+      {value || <span className="inline-placeholder">{placeholder}</span>}
       <span className="edit-icon">✏️</span>
     </span>
   );
@@ -89,6 +100,16 @@ export default function SquadDetailPage() {
     setSquad(prev => ({ ...prev, members: [...prev.members, member] }));
     setMemberName('');
     setMemberRole('');
+  }
+
+  async function updateSquad(patch) {
+    const res = await fetch(`/api/squads/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(patch),
+    });
+    const updated = await res.json();
+    setSquad(prev => ({ ...prev, ...updated, members: prev.members }));
   }
 
   async function updateMember(memberId, patch) {
@@ -151,8 +172,18 @@ export default function SquadDetailPage() {
       <Link to="/squads" className="back-link">← All Squads</Link>
 
       <div className="detail-header">
-        <h1>{squad.name}</h1>
-        {squad.description && <p className="detail-desc">{squad.description}</p>}
+        <InlineEdit
+          value={squad.name}
+          className="squad-title"
+          onSave={val => updateSquad({ name: val })}
+        />
+        <InlineEdit
+          value={squad.description}
+          className="detail-desc"
+          multiline
+          placeholder="Add a description..."
+          onSave={val => updateSquad({ description: val })}
+        />
         <span className="detail-meta">Created {new Date(squad.created_at).toLocaleDateString()}</span>
       </div>
 

@@ -4,9 +4,18 @@
 .back-link:hover { text-decoration: underline; }
 
 .detail-header { display: flex; flex-direction: column; gap: 6px; }
-.detail-header h1 { font-size: 30px; font-weight: 700; color: var(--accent-strong); }
+
+.squad-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  line-height: 1.2;
+}
+
 .detail-desc { font-size: 15px; color: var(--text-secondary); }
 .detail-meta { font-size: 12px; color: var(--text-faint); }
+
+.inline-placeholder { color: var(--text-faint); font-style: italic; }
 
 .members-section { display: flex; flex-direction: column; gap: 16px; }
 .members-section h2 { font-size: 18px; color: var(--accent); }
@@ -66,8 +75,23 @@
   color: inherit;
   width: auto;
   min-width: 80px;
-  max-width: 260px;
+  max-width: 480px;
   border-radius: 4px;
+}
+
+.inline-input.squad-title {
+  font-size: 30px;
+  font-weight: 700;
+  width: 100%;
+  max-width: 600px;
+}
+
+.inline-input.detail-desc {
+  font-size: 15px;
+  width: 100%;
+  max-width: 600px;
+  resize: none;
+  overflow: hidden;
 }
 
 .member-name { font-size: 15px; font-weight: 500; color: var(--text); }
