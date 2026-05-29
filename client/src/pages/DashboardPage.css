@@ -1,0 +1,101 @@
+.dashboard { display: flex; flex-direction: column; gap: 28px; }
+
+.page-header { display: flex; align-items: baseline; gap: 12px; }
+.page-header h1 { font-size: 28px; font-weight: 700; color: #c4b5fd; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: #13132a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #a78bfa;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #8888bb;
+  margin-top: 4px;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: #5555aa;
+}
+
+.dashboard-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .dashboard-row { grid-template-columns: 1fr; }
+}
+
+.dashboard-panel {
+  background: #13132a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-panel h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #a78bfa;
+}
+
+.top-squads { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.top-squad-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rank {
+  font-size: 12px;
+  color: #5555aa;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.top-squad-name {
+  flex: 1;
+  font-size: 14px;
+  color: #c4b5fd;
+}
+.top-squad-name:hover { text-decoration: underline; }
+
+.top-squad-count {
+  font-size: 12px;
+  color: #6666aa;
+}
+
+.highlights { display: flex; flex-direction: column; gap: 16px; }
+
+.highlight-item { display: flex; flex-direction: column; gap: 2px; }
+.highlight-label { font-size: 11px; color: #5555aa; text-transform: uppercase; letter-spacing: 0.5px; }
+.highlight-value { font-size: 16px; font-weight: 600; color: #e0e0f0; }
+.highlight-sub { font-size: 12px; color: #6666aa; }
+
+.empty { color: #6666aa; font-size: 13px; }
+.loading { color: #6666aa; font-size: 14px; }

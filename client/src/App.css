@@ -16,11 +16,22 @@
   letter-spacing: 1px;
 }
 
-.tagline {
-  font-size: 13px;
-  color: #6666aa;
+.app-nav {
+  display: flex;
+  gap: 4px;
   flex: 1;
+  margin-left: 8px;
 }
+
+.nav-link {
+  font-size: 14px;
+  color: #6666aa;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: #c4b5fd; background: #1e1e38; }
+.nav-link.active { color: #c4b5fd; background: #1e1e38; }
 
 .header-user {
   display: flex;

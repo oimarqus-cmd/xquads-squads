@@ -1,7 +1,8 @@
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, NavLink } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import SquadsPage from './pages/SquadsPage';
 import SquadDetailPage from './pages/SquadDetailPage';
+import DashboardPage from './pages/DashboardPage';
 import AuthPage from './pages/AuthPage';
 import './App.css';
 
@@ -15,7 +16,12 @@ function Header() {
   return (
     <header className="app-header">
       <Link to="/" className="logo">XQuads</Link>
-      <span className="tagline">Squad Management</span>
+      {user && (
+        <nav className="app-nav">
+          <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Dashboard</NavLink>
+          <NavLink to="/squads" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Squads</NavLink>
+        </nav>
+      )}
       {user && (
         <div className="header-user">
           <span className="user-name">{user.name}</span>
@@ -34,7 +40,8 @@ export default function App() {
         <main className="app-main">
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
-            <Route path="/" element={<PrivateRoute><SquadsPage /></PrivateRoute>} />
+            <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+            <Route path="/squads" element={<PrivateRoute><SquadsPage /></PrivateRoute>} />
             <Route path="/squads/:id" element={<PrivateRoute><SquadDetailPage /></PrivateRoute>} />
           </Routes>
         </main>
