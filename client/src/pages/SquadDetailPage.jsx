@@ -82,7 +82,7 @@ export default function SquadDetailPage() {
       body: JSON.stringify(patch),
     });
     const updated = await res.json();
-    setSquad(prev => ({ ...prev, ...updated, members: prev.members }));
+    setSquad(prev => ({ ...prev, ...updated, members: prev.members, tags: prev.tags }));
   }
 
   async function updateMember(memberId, patch) {

@@ -1,3 +1,9 @@
+@property --card-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
 :root {
   --bg: #0f0f1a;
   --surface: #13132a;
