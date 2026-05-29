@@ -56,7 +56,7 @@ export default function SquadsPage() {
       body: JSON.stringify(patch),
     });
     const updated = await res.json();
-    setSquads(prev => prev.map(s => s.id === id ? { ...s, ...updated, members: s.members } : s));
+    setSquads(prev => prev.map(s => s.id === id ? { ...s, ...updated, members: s.members, tags: s.tags } : s));
   }
 
   async function deleteSquad(id) {
