@@ -39,7 +39,14 @@
 .tag-form { display: flex; gap: 8px; max-width: 340px; }
 .tag-input { flex: 1; }
 
-.members-section { display: flex; flex-direction: column; gap: 16px; }
+.members-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-left: 3px solid var(--card-accent, transparent);
+  padding-left: 14px;
+  transition: border-color 0.3s;
+}
 .members-section h2 { font-size: 18px; color: var(--accent); }
 .count { font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
