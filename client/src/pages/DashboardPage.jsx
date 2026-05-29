@@ -85,7 +85,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="charts-row">
-        <div className="dashboard-panel">
+        <div className="dashboard-panel" style={{ '--card-accent': accent(0) }}>
           <h2>Members per Squad</h2>
           {stats.membersBySquad.length === 0 ? (
             <p className="empty">No data yet.</p>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="dashboard-panel">
+        <div className="dashboard-panel" style={{ '--card-accent': accent(1) }}>
           <h2>Squad Status</h2>
           {stats.totalSquads === 0 ? (
             <p className="empty">No squads yet.</p>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
         </div>
 
         {stats.roleDistribution.length > 0 && (
-          <div className="dashboard-panel">
+          <div className="dashboard-panel" style={{ '--card-accent': accent(2) }}>
             <h2>Members by Role</h2>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats.roleDistribution} layout="vertical" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -154,7 +154,7 @@ export default function DashboardPage() {
         )}
 
         {stats.tagDistribution.length > 0 && (
-          <div className="dashboard-panel">
+          <div className="dashboard-panel" style={{ '--card-accent': accent(3) }}>
             <h2>Squads by Tag</h2>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats.tagDistribution} layout="vertical" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="dashboard-row">
-        <div className="dashboard-panel">
+        <div className="dashboard-panel" style={{ '--card-accent': accent(4) }}>
           <h2>Top Squads by Size</h2>
           {stats.topSquads.length === 0 ? (
             <p className="empty">No squads yet.</p>
@@ -196,7 +196,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="dashboard-panel">
+        <div className="dashboard-panel" style={{ '--card-accent': accent(5) }}>
           <h2>Highlights</h2>
           <div className="highlights">
             {stats.largestSquad && (

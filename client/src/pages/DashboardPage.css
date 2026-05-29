@@ -68,12 +68,13 @@
 .dashboard-panel {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--card-accent, var(--border));
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: background 0.2s;
+  transition: background 0.2s, --card-accent 0.35s ease;
 }
 
 .dashboard-panel h2 { font-size: 15px; font-weight: 600; color: var(--accent); }
