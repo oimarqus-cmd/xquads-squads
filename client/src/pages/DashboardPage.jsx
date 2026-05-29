@@ -5,6 +5,8 @@ import {
   PieChart, Pie, Legend,
 } from 'recharts';
 import { getToken } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { tagChartColor } from '../utils/tagColor';
 import './DashboardPage.css';
 
 function authHeaders() {
@@ -46,6 +48,8 @@ function PieTooltip({ active, payload }) {
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     fetch('/api/stats', { headers: authHeaders() })
@@ -135,6 +139,24 @@ export default function DashboardPage() {
                 <Bar dataKey="count" name="members" radius={[0, 4, 4, 0]}>
                   {stats.roleDistribution.map((_, i) => (
                     <Cell key={i} fill={PURPLE_SHADES[i % PURPLE_SHADES.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {stats.tagDistribution.length > 0 && (
+          <div className="dashboard-panel">
+            <h2>Squads by Tag</h2>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={stats.tagDistribution} layout="vertical" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <XAxis type="number" allowDecimals={false} tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} width={80} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1e1e38' }} />
+                <Bar dataKey="squads" name="squads" radius={[0, 4, 4, 0]}>
+                  {stats.tagDistribution.map((entry, i) => (
+                    <Cell key={i} fill={tagChartColor(entry.name, isDark)} />
                   ))}
                 </Bar>
               </BarChart>

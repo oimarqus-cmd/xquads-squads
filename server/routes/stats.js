@@ -33,6 +33,14 @@ router.get('/', (req, res) => {
     SELECT role, COUNT(*) as count FROM members GROUP BY role ORDER BY count DESC LIMIT 6
   `).all();
 
+  const tagDistribution = db.prepare(`
+    SELECT t.name, COUNT(DISTINCT t.squad_id) as squads
+    FROM tags t
+    GROUP BY LOWER(t.name)
+    ORDER BY squads DESC, t.name ASC
+    LIMIT 12
+  `).all();
+
   res.json({
     totalSquads,
     totalMembers,
@@ -43,6 +51,7 @@ router.get('/', (req, res) => {
     topSquads,
     membersBySquad,
     roleDistribution,
+    tagDistribution,
   });
 });
 
