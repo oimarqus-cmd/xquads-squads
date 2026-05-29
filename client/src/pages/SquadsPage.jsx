@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
+import InlineEdit from '../components/InlineEdit';
 import './SquadsPage.css';
 
 const PAGE_SIZE_OPTIONS = [6, 12, 24];
@@ -41,6 +42,16 @@ export default function SquadsPage() {
     setSquads(prev => [...prev, squad]);
     setName('');
     setDescription('');
+  }
+
+  async function updateSquad(id, patch) {
+    const res = await fetch(`/api/squads/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(patch),
+    });
+    const updated = await res.json();
+    setSquads(prev => prev.map(s => s.id === id ? { ...s, ...updated, members: s.members } : s));
   }
 
   async function deleteSquad(id) {
@@ -184,13 +195,29 @@ export default function SquadsPage() {
             {paginated.map(squad => (
               <div key={squad.id} className="squad-card">
                 <div className="squad-card-body">
-                  <Link to={`/squads/${squad.id}`} className="squad-name">
-                    {search ? <Highlight text={squad.name} query={search} /> : squad.name}
-                  </Link>
-                  {squad.description && (
-                    <p className="squad-desc">
-                      {search ? <Highlight text={squad.description} query={search} /> : squad.description}
-                    </p>
+                  {search ? (
+                    <Link to={`/squads/${squad.id}`} className="squad-name">
+                      <Highlight text={squad.name} query={search} />
+                    </Link>
+                  ) : (
+                    <InlineEdit
+                      value={squad.name}
+                      className="squad-name"
+                      onSave={val => updateSquad(squad.id, { name: val })}
+                    />
+                  )}
+                  {search ? (
+                    squad.description && (
+                      <p className="squad-desc"><Highlight text={squad.description} query={search} /></p>
+                    )
+                  ) : (
+                    <InlineEdit
+                      value={squad.description}
+                      className="squad-desc"
+                      multiline
+                      placeholder="Add a description..."
+                      onSave={val => updateSquad(squad.id, { description: val })}
+                    />
                   )}
                   <span className="member-count">{squad.members.length} member{squad.members.length !== 1 ? 's' : ''}</span>
                 </div>

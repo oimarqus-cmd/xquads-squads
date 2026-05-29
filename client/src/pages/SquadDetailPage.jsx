@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
+import InlineEdit from '../components/InlineEdit';
 import './SquadDetailPage.css';
 
 const PAGE_SIZE = 10;
@@ -16,58 +17,6 @@ function Highlight({ text, query }) {
     part.toLowerCase() === query.toLowerCase()
       ? <mark key={i} className="highlight">{part}</mark>
       : part
-  );
-}
-
-function InlineEdit({ value, onSave, className, multiline = false, placeholder = '' }) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (editing && inputRef.current) {
-      inputRef.current.focus();
-      if (multiline) {
-        inputRef.current.style.height = 'auto';
-        inputRef.current.style.height = inputRef.current.scrollHeight + 'px';
-      }
-    }
-  }, [editing, multiline]);
-
-  function start() { setDraft(value); setEditing(true); }
-
-  function save() {
-    const trimmed = draft.trim();
-    if (trimmed !== value) onSave(trimmed);
-    setEditing(false);
-  }
-
-  function onKey(e) {
-    if (e.key === 'Enter' && !multiline) { e.preventDefault(); save(); }
-    if (e.key === 'Escape') setEditing(false);
-  }
-
-  if (editing) {
-    const Tag = multiline ? 'textarea' : 'input';
-    return (
-      <Tag
-        ref={inputRef}
-        className={`inline-input ${className}`}
-        value={draft}
-        placeholder={placeholder}
-        onChange={e => setDraft(e.target.value)}
-        onBlur={save}
-        onKeyDown={onKey}
-        rows={multiline ? 2 : undefined}
-      />
-    );
-  }
-
-  return (
-    <span className={`inline-value ${className}`} onClick={start} title="Click to edit">
-      {value || <span className="inline-placeholder">{placeholder}</span>}
-      <span className="edit-icon">✏️</span>
-    </span>
   );
 }
 
@@ -172,18 +121,8 @@ export default function SquadDetailPage() {
       <Link to="/squads" className="back-link">← All Squads</Link>
 
       <div className="detail-header">
-        <InlineEdit
-          value={squad.name}
-          className="squad-title"
-          onSave={val => updateSquad({ name: val })}
-        />
-        <InlineEdit
-          value={squad.description}
-          className="detail-desc"
-          multiline
-          placeholder="Add a description..."
-          onSave={val => updateSquad({ description: val })}
-        />
+        <InlineEdit value={squad.name} className="squad-title" onSave={val => updateSquad({ name: val })} />
+        <InlineEdit value={squad.description} className="detail-desc" multiline placeholder="Add a description..." onSave={val => updateSquad({ description: val })} />
         <span className="detail-meta">Created {new Date(squad.created_at).toLocaleDateString()}</span>
       </div>
 
@@ -191,17 +130,8 @@ export default function SquadDetailPage() {
         <h2>Members <span className="count">({squad.members.length})</span></h2>
 
         <form className="add-member-form" onSubmit={addMember}>
-          <input
-            placeholder="Member name"
-            value={memberName}
-            onChange={e => setMemberName(e.target.value)}
-            required
-          />
-          <input
-            placeholder="Role (optional)"
-            value={memberRole}
-            onChange={e => setMemberRole(e.target.value)}
-          />
+          <input placeholder="Member name" value={memberName} onChange={e => setMemberName(e.target.value)} required />
+          <input placeholder="Role (optional)" value={memberRole} onChange={e => setMemberRole(e.target.value)} />
           <button type="submit" className="btn-primary">Add Member</button>
         </form>
 
@@ -211,12 +141,7 @@ export default function SquadDetailPage() {
           <>
             <div className="member-search-wrap">
               <span className="search-icon">🔍</span>
-              <input
-                className="member-search"
-                placeholder="Search by name or role..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
+              <input className="member-search" placeholder="Search by name or role..." value={search} onChange={e => setSearch(e.target.value)} />
               {search && <button className="clear-btn" onClick={() => setSearch('')}>✕</button>}
             </div>
 
@@ -247,16 +172,8 @@ export default function SquadDetailPage() {
                           </>
                         ) : (
                           <>
-                            <InlineEdit
-                              value={member.name}
-                              className="member-name"
-                              onSave={val => updateMember(member.id, { name: val })}
-                            />
-                            <InlineEdit
-                              value={member.role}
-                              className="member-role"
-                              onSave={val => updateMember(member.id, { role: val })}
-                            />
+                            <InlineEdit value={member.name} className="member-name" onSave={val => updateMember(member.id, { name: val })} />
+                            <InlineEdit value={member.role} className="member-role" onSave={val => updateMember(member.id, { role: val })} />
                           </>
                         )}
                       </div>
@@ -267,23 +184,15 @@ export default function SquadDetailPage() {
 
                 {totalPages > 1 && (
                   <div className="pagination">
-                    <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage === 1}>
-                      ← Prev
-                    </button>
+                    <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage === 1}>← Prev</button>
                     <div className="page-numbers">
                       {getPageNumbers().map((p, i) =>
                         p === '...'
                           ? <span key={`e-${i}`} className="page-ellipsis">…</span>
-                          : <button
-                              key={p}
-                              className={`page-num ${safePage === p ? 'page-num-active' : ''}`}
-                              onClick={() => setPage(p)}
-                            >{p}</button>
+                          : <button key={p} className={`page-num ${safePage === p ? 'page-num-active' : ''}`} onClick={() => setPage(p)}>{p}</button>
                       )}
                     </div>
-                    <button className="page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={safePage === totalPages}>
-                      Next →
-                    </button>
+                    <button className="page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={safePage === totalPages}>Next →</button>
                   </div>
                 )}
               </>

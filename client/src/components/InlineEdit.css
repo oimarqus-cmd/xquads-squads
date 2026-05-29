@@ -1,0 +1,31 @@
+.inline-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: -1px -4px;
+  transition: background 0.15s;
+}
+.inline-value:hover { background: var(--surface-hover); }
+
+.edit-icon {
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.inline-value:hover .edit-icon { opacity: 1; }
+
+.inline-input {
+  padding: 1px 6px;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  width: auto;
+  min-width: 80px;
+  border-radius: 4px;
+}
+
+.inline-placeholder { color: var(--text-faint); font-style: italic; }
