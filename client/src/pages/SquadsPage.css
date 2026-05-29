@@ -214,6 +214,8 @@
 .squad-name { font-size: 17px; font-weight: 600; color: var(--accent-strong); }
 .squad-name:hover { text-decoration: underline; }
 .squad-desc { font-size: 13px; color: var(--text-secondary); }
+.tag-list { display: flex; flex-wrap: wrap; gap: 4px; }
+
 .member-count { font-size: 12px; color: var(--text-faint); }
 
 .squad-card-actions { display: flex; gap: 8px; }

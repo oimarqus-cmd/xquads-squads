@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
 import InlineEdit from '../components/InlineEdit';
+import TagChip from '../components/TagChip';
 import './SquadDetailPage.css';
 
 const PAGE_SIZE = 10;
@@ -28,6 +29,7 @@ export default function SquadDetailPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [tagInput, setTagInput] = useState('');
 
   useEffect(() => {
     fetch(`/api/squads/${id}`, { headers: authHeaders() })
@@ -49,6 +51,26 @@ export default function SquadDetailPage() {
     setSquad(prev => ({ ...prev, members: [...prev.members, member] }));
     setMemberName('');
     setMemberRole('');
+  }
+
+  async function addTag(e) {
+    e.preventDefault();
+    const name = tagInput.trim();
+    if (!name) return;
+    const res = await fetch(`/api/squads/${id}/tags`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ name }),
+    });
+    if (!res.ok) return;
+    const tag = await res.json();
+    setSquad(prev => ({ ...prev, tags: [...(prev.tags || []), tag].sort((a, b) => a.name.localeCompare(b.name)) }));
+    setTagInput('');
+  }
+
+  async function removeTag(tagId) {
+    await fetch(`/api/squads/${id}/tags/${tagId}`, { method: 'DELETE', headers: authHeaders() });
+    setSquad(prev => ({ ...prev, tags: prev.tags.filter(t => t.id !== tagId) }));
   }
 
   async function updateSquad(patch) {
@@ -125,6 +147,29 @@ export default function SquadDetailPage() {
         <InlineEdit value={squad.description} className="detail-desc" multiline placeholder="Add a description..." onSave={val => updateSquad({ description: val })} />
         <span className="detail-meta">Created {new Date(squad.created_at).toLocaleDateString()}</span>
       </div>
+
+      <section className="tags-section">
+        <h2>Tags</h2>
+        <div className="tags-body">
+          {squad.tags?.length > 0 && (
+            <div className="tag-list">
+              {squad.tags.map(tag => (
+                <TagChip key={tag.id} name={tag.name} onRemove={() => removeTag(tag.id)} />
+              ))}
+            </div>
+          )}
+          <form className="tag-form" onSubmit={addTag}>
+            <input
+              className="tag-input"
+              placeholder="Add a tag..."
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
+              maxLength={30}
+            />
+            <button type="submit" className="btn-primary">Add</button>
+          </form>
+        </div>
+      </section>
 
       <section className="members-section">
         <h2>Members <span className="count">({squad.members.length})</span></h2>

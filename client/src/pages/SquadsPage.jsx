@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
 import InlineEdit from '../components/InlineEdit';
+import TagChip from '../components/TagChip';
 import './SquadsPage.css';
 
 const PAGE_SIZE_OPTIONS = [6, 12, 24];
@@ -18,6 +19,7 @@ export default function SquadsPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('newest');
+  const [activeTag, setActiveTag] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
 
@@ -27,8 +29,7 @@ export default function SquadsPage() {
       .then(data => { setSquads(data); setLoading(false); });
   }, []);
 
-  // Reset to page 1 whenever filters change
-  useEffect(() => { setPage(1); }, [search, filter, sort, pageSize]);
+  useEffect(() => { setPage(1); }, [search, filter, sort, pageSize, activeTag]);
 
   async function createSquad(e) {
     e.preventDefault();
@@ -70,6 +71,7 @@ export default function SquadsPage() {
     }
     if (filter === 'active') result = result.filter(s => s.members.length > 0);
     if (filter === 'empty') result = result.filter(s => s.members.length === 0);
+    if (activeTag) result = result.filter(s => s.tags?.some(t => t.name === activeTag));
     return [...result].sort((a, b) => {
       if (sort === 'newest') return new Date(b.created_at) - new Date(a.created_at);
       if (sort === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
@@ -82,7 +84,13 @@ export default function SquadsPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
-  const hasActiveFilters = search || filter !== 'all' || sort !== 'newest';
+  const hasActiveFilters = search || filter !== 'all' || sort !== 'newest' || activeTag;
+
+  const allTags = useMemo(() => {
+    const seen = new Set();
+    squads.forEach(s => s.tags?.forEach(t => seen.add(t.name)));
+    return [...seen].sort();
+  }, [squads]);
 
   function getPageNumbers() {
     const pages = [];
@@ -158,8 +166,23 @@ export default function SquadsPage() {
             </select>
           </div>
 
+          {allTags.length > 0 && (
+            <div className="filter-group">
+              <label className="filter-label">Tag</label>
+              <div className="filter-pills">
+                {allTags.map(tag => (
+                  <button
+                    key={tag}
+                    className={`pill ${activeTag === tag ? 'pill-active' : ''}`}
+                    onClick={() => setActiveTag(t => t === tag ? '' : tag)}
+                  >{tag}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {hasActiveFilters && (
-            <button className="clear-filters" onClick={() => { setSearch(''); setFilter('all'); setSort('newest'); }}>
+            <button className="clear-filters" onClick={() => { setSearch(''); setFilter('all'); setSort('newest'); setActiveTag(''); }}>
               Clear filters
             </button>
           )}
@@ -218,6 +241,13 @@ export default function SquadsPage() {
                       placeholder="Add a description..."
                       onSave={val => updateSquad(squad.id, { description: val })}
                     />
+                  )}
+                  {squad.tags?.length > 0 && (
+                    <div className="tag-list">
+                      {squad.tags.map(tag => (
+                        <TagChip key={tag.id} name={tag.name} />
+                      ))}
+                    </div>
                   )}
                   <span className="member-count">{squad.members.length} member{squad.members.length !== 1 ? 's' : ''}</span>
                 </div>

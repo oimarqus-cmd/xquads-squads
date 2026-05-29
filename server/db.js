@@ -30,6 +30,13 @@ db.exec(`
     role TEXT NOT NULL DEFAULT 'Member',
     FOREIGN KEY (squad_id) REFERENCES squads(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS tags (
+    id TEXT PRIMARY KEY,
+    squad_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    FOREIGN KEY (squad_id) REFERENCES squads(id) ON DELETE CASCADE
+  );
 `);
 
 module.exports = db;
