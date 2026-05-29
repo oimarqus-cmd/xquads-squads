@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getToken } from '../context/AuthContext';
 import './SquadsPage.css';
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` };
+}
 
 export default function SquadsPage() {
   const [squads, setSquads] = useState([]);
@@ -9,7 +14,7 @@ export default function SquadsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/squads')
+    fetch('/api/squads', { headers: authHeaders() })
       .then(r => r.json())
       .then(data => { setSquads(data); setLoading(false); });
   }, []);
@@ -19,7 +24,7 @@ export default function SquadsPage() {
     if (!name.trim()) return;
     const res = await fetch('/api/squads', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ name, description }),
     });
     const squad = await res.json();
@@ -29,7 +34,7 @@ export default function SquadsPage() {
   }
 
   async function deleteSquad(id) {
-    await fetch(`/api/squads/${id}`, { method: 'DELETE' });
+    await fetch(`/api/squads/${id}`, { method: 'DELETE', headers: authHeaders() });
     setSquads(prev => prev.filter(s => s.id !== id));
   }
 

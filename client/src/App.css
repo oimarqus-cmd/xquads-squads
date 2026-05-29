@@ -19,6 +19,25 @@
 .tagline {
   font-size: 13px;
   color: #6666aa;
+  flex: 1;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-name {
+  font-size: 13px;
+  color: #a78bfa;
+}
+
+.btn-logout {
+  background: #2a2a4a;
+  color: #c4b5fd;
+  padding: 6px 14px;
+  font-size: 13px;
 }
 
 .app-main {

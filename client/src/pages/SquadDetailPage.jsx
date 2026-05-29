@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { getToken } from '../context/AuthContext';
 import './SquadDetailPage.css';
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` };
+}
 
 export default function SquadDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [squad, setSquad] = useState(null);
   const [memberName, setMemberName] = useState('');
   const [memberRole, setMemberRole] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/squads/${id}`)
+    fetch(`/api/squads/${id}`, { headers: authHeaders() })
       .then(r => r.ok ? r.json() : null)
       .then(data => { setSquad(data); setLoading(false); });
   }, [id]);
@@ -21,7 +25,7 @@ export default function SquadDetailPage() {
     if (!memberName.trim()) return;
     const res = await fetch(`/api/squads/${id}/members`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ name: memberName, role: memberRole }),
     });
     const member = await res.json();
@@ -31,7 +35,7 @@ export default function SquadDetailPage() {
   }
 
   async function removeMember(memberId) {
-    await fetch(`/api/squads/${id}/members/${memberId}`, { method: 'DELETE' });
+    await fetch(`/api/squads/${id}/members/${memberId}`, { method: 'DELETE', headers: authHeaders() });
     setSquad(prev => ({ ...prev, members: prev.members.filter(m => m.id !== memberId) }));
   }
 
