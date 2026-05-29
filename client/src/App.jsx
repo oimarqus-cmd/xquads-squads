@@ -1,5 +1,6 @@
 import { Routes, Route, Link, Navigate, NavLink } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import SquadsPage from './pages/SquadsPage';
 import SquadDetailPage from './pages/SquadDetailPage';
 import DashboardPage from './pages/DashboardPage';
@@ -13,6 +14,7 @@ function PrivateRoute({ children }) {
 
 function Header() {
   const { user, logout } = useAuth();
+  const { theme, toggle } = useTheme();
   return (
     <header className="app-header">
       <Link to="/" className="logo">XQuads</Link>
@@ -22,30 +24,37 @@ function Header() {
           <NavLink to="/squads" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Squads</NavLink>
         </nav>
       )}
-      {user && (
-        <div className="header-user">
-          <span className="user-name">{user.name}</span>
-          <button className="btn-logout" onClick={logout}>Logout</button>
-        </div>
-      )}
+      <div className="header-user">
+        <button className="theme-toggle" onClick={toggle} title="Toggle theme">
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+        {user && (
+          <>
+            <span className="user-name">{user.name}</span>
+            <button className="btn-logout" onClick={logout}>Logout</button>
+          </>
+        )}
+      </div>
     </header>
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <div className="app">
-        <Header />
-        <main className="app-main">
-          <Routes>
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-            <Route path="/squads" element={<PrivateRoute><SquadsPage /></PrivateRoute>} />
-            <Route path="/squads/:id" element={<PrivateRoute><SquadDetailPage /></PrivateRoute>} />
-          </Routes>
-        </main>
-      </div>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="app">
+          <Header />
+          <main className="app-main">
+            <Routes>
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+              <Route path="/squads" element={<PrivateRoute><SquadsPage /></PrivateRoute>} />
+              <Route path="/squads/:id" element={<PrivateRoute><SquadDetailPage /></PrivateRoute>} />
+            </Routes>
+          </main>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

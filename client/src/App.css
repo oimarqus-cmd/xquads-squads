@@ -5,14 +5,15 @@
   align-items: center;
   gap: 12px;
   padding: 16px 32px;
-  background: #13132a;
-  border-bottom: 1px solid #2a2a4a;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .logo {
   font-size: 22px;
   font-weight: 700;
-  color: #a78bfa;
+  color: var(--accent);
   letter-spacing: 1px;
 }
 
@@ -25,13 +26,13 @@
 
 .nav-link {
   font-size: 14px;
-  color: #6666aa;
+  color: var(--text-muted);
   padding: 6px 12px;
   border-radius: 6px;
   transition: color 0.2s, background 0.2s;
 }
-.nav-link:hover { color: #c4b5fd; background: #1e1e38; }
-.nav-link.active { color: #c4b5fd; background: #1e1e38; }
+.nav-link:hover { color: var(--accent-strong); background: var(--surface-hover); }
+.nav-link.active { color: var(--accent-strong); background: var(--surface-hover); }
 
 .header-user {
   display: flex;
@@ -41,14 +42,23 @@
 
 .user-name {
   font-size: 13px;
-  color: #a78bfa;
+  color: var(--accent);
 }
 
 .btn-logout {
-  background: #2a2a4a;
-  color: #c4b5fd;
+  background: var(--surface-hover);
+  color: var(--accent-strong);
   padding: 6px 14px;
   font-size: 13px;
+}
+
+.theme-toggle {
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  line-height: 1;
 }
 
 .app-main {

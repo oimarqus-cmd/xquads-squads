@@ -1,16 +1,16 @@
 .detail-page { display: flex; flex-direction: column; gap: 24px; }
 
-.back-link { font-size: 14px; color: #7c5cbf; width: fit-content; }
+.back-link { font-size: 14px; color: var(--accent); width: fit-content; }
 .back-link:hover { text-decoration: underline; }
 
 .detail-header { display: flex; flex-direction: column; gap: 6px; }
-.detail-header h1 { font-size: 30px; font-weight: 700; color: #c4b5fd; }
-.detail-desc { font-size: 15px; color: #8888bb; }
-.detail-meta { font-size: 12px; color: #5555aa; }
+.detail-header h1 { font-size: 30px; font-weight: 700; color: var(--accent-strong); }
+.detail-desc { font-size: 15px; color: var(--text-secondary); }
+.detail-meta { font-size: 12px; color: var(--text-faint); }
 
 .members-section { display: flex; flex-direction: column; gap: 16px; }
-.members-section h2 { font-size: 18px; color: #a78bfa; }
-.count { font-size: 14px; color: #6666aa; font-weight: 400; }
+.members-section h2 { font-size: 18px; color: var(--accent); }
+.count { font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
 .add-member-form {
   display: flex;
@@ -20,9 +20,9 @@
 }
 .add-member-form input { flex: 1; min-width: 140px; }
 
-.btn-primary { background: #7c3aed; color: #fff; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: #fff; white-space: nowrap; }
 
-.empty { color: #6666aa; font-size: 14px; }
+.empty { color: var(--text-muted); font-size: 14px; }
 
 .members-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 
@@ -30,15 +30,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #13132a;
-  border: 1px solid #2a2a4a;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 16px;
   max-width: 600px;
+  transition: background 0.2s;
 }
 
 .member-info { display: flex; flex-direction: column; gap: 2px; }
-.member-name { font-size: 15px; font-weight: 500; color: #e0e0f0; }
-.member-role { font-size: 12px; color: #6666aa; }
+.member-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.member-role { font-size: 12px; color: var(--text-muted); }
 
-.btn-danger-sm { background: #4a1a2a; color: #f87171; padding: 6px 12px; font-size: 12px; }
+.btn-danger-sm { background: var(--danger-bg); color: var(--danger-text); padding: 6px 12px; font-size: 12px; }
