@@ -15,9 +15,9 @@ function authHeaders() {
 
 const PURPLE_SHADES = ['#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe', '#6d28d9', '#5b21b6'];
 
-function StatCard({ label, value, sub }) {
+function StatCard({ label, value, sub, accent }) {
   return (
-    <div className="stat-card">
+    <div className="stat-card" style={accent ? { '--card-accent': accent } : {}}>
       <span className={`stat-value${typeof value === 'string' ? ' text' : ''}`}>{value}</span>
       <span className="stat-label">{label}</span>
       {sub && <span className="stat-sub">{sub}</span>}
@@ -76,9 +76,9 @@ export default function DashboardPage() {
         <StatCard label="Total Members" value={stats.totalMembers} />
         <StatCard label="Avg Members / Squad" value={stats.avgMembers} />
         <StatCard label="Empty Squads" value={stats.emptySquads} sub="squads with no members" />
-        <StatCard label="Unique Tags" value={stats.totalTags} />
-        <StatCard label="Tagged Squads" value={stats.taggedSquads} sub={stats.totalSquads > 0 ? `${Math.round(stats.taggedSquads / stats.totalSquads * 100)}% of squads` : ''} />
-        {stats.topTag && <StatCard label="Top Tag" value={stats.topTag.name} sub={`${stats.topTag.squads} squad${stats.topTag.squads !== 1 ? 's' : ''}`} />}
+        <StatCard label="Unique Tags" value={stats.totalTags} accent={stats.tagDistribution[0] ? tagChartColor(stats.tagDistribution[0].name, isDark) : undefined} />
+        <StatCard label="Tagged Squads" value={stats.taggedSquads} sub={stats.totalSquads > 0 ? `${Math.round(stats.taggedSquads / stats.totalSquads * 100)}% of squads` : ''} accent={stats.tagDistribution[1] ? tagChartColor(stats.tagDistribution[1].name, isDark) : undefined} />
+        {stats.topTag && <StatCard label="Top Tag" value={stats.topTag.name} sub={`${stats.topTag.squads} squad${stats.topTag.squads !== 1 ? 's' : ''}`} accent={tagChartColor(stats.topTag.name, isDark)} />}
       </div>
 
       <div className="charts-row">
