@@ -54,6 +54,15 @@ router.post('/:id/members', (req, res) => {
   res.status(201).json({ id: member.id, name: member.name, role: member.role });
 });
 
+router.put('/:id/members/:memberId', (req, res) => {
+  const member = db.prepare('SELECT * FROM members WHERE id = ? AND squad_id = ?').get(req.params.memberId, req.params.id);
+  if (!member) return res.status(404).json({ error: 'Member not found' });
+  const name = req.body.name?.trim() || member.name;
+  const role = req.body.role?.trim() || member.role;
+  db.prepare('UPDATE members SET name = ?, role = ? WHERE id = ?').run(name, role, req.params.memberId);
+  res.json({ id: member.id, name, role });
+});
+
 router.delete('/:id/members/:memberId', (req, res) => {
   const info = db.prepare('DELETE FROM members WHERE id = ? AND squad_id = ?').run(req.params.memberId, req.params.id);
   if (info.changes === 0) return res.status(404).json({ error: 'Member not found' });

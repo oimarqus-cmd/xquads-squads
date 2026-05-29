@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
 import './SquadDetailPage.css';
@@ -16,6 +16,47 @@ function Highlight({ text, query }) {
     part.toLowerCase() === query.toLowerCase()
       ? <mark key={i} className="highlight">{part}</mark>
       : part
+  );
+}
+
+function InlineEdit({ value, onSave, className }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  const inputRef = useRef(null);
+
+  useEffect(() => { if (editing) inputRef.current?.focus(); }, [editing]);
+
+  function start() { setDraft(value); setEditing(true); }
+
+  function save() {
+    const trimmed = draft.trim();
+    if (trimmed && trimmed !== value) onSave(trimmed);
+    setEditing(false);
+  }
+
+  function onKey(e) {
+    if (e.key === 'Enter') save();
+    if (e.key === 'Escape') setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <input
+        ref={inputRef}
+        className={`inline-input ${className}`}
+        value={draft}
+        onChange={e => setDraft(e.target.value)}
+        onBlur={save}
+        onKeyDown={onKey}
+      />
+    );
+  }
+
+  return (
+    <span className={`inline-value ${className}`} onClick={start} title="Click to edit">
+      {value}
+      <span className="edit-icon">✏️</span>
+    </span>
   );
 }
 
@@ -48,6 +89,19 @@ export default function SquadDetailPage() {
     setSquad(prev => ({ ...prev, members: [...prev.members, member] }));
     setMemberName('');
     setMemberRole('');
+  }
+
+  async function updateMember(memberId, patch) {
+    const res = await fetch(`/api/squads/${id}/members/${memberId}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(patch),
+    });
+    const updated = await res.json();
+    setSquad(prev => ({
+      ...prev,
+      members: prev.members.map(m => m.id === memberId ? { ...m, ...updated } : m),
+    }));
   }
 
   async function removeMember(memberId) {
@@ -155,12 +209,25 @@ export default function SquadDetailPage() {
                   {paginated.map(member => (
                     <li key={member.id} className="member-item">
                       <div className="member-info">
-                        <span className="member-name">
-                          <Highlight text={member.name} query={search} />
-                        </span>
-                        <span className="member-role">
-                          <Highlight text={member.role} query={search} />
-                        </span>
+                        {search ? (
+                          <>
+                            <span className="member-name"><Highlight text={member.name} query={search} /></span>
+                            <span className="member-role"><Highlight text={member.role} query={search} /></span>
+                          </>
+                        ) : (
+                          <>
+                            <InlineEdit
+                              value={member.name}
+                              className="member-name"
+                              onSave={val => updateMember(member.id, { name: val })}
+                            />
+                            <InlineEdit
+                              value={member.role}
+                              className="member-role"
+                              onSave={val => updateMember(member.id, { role: val })}
+                            />
+                          </>
+                        )}
                       </div>
                       <button className="btn-danger-sm" onClick={() => removeMember(member.id)}>Remove</button>
                     </li>
