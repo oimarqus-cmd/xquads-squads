@@ -1,0 +1,44 @@
+.detail-page { display: flex; flex-direction: column; gap: 24px; }
+
+.back-link { font-size: 14px; color: #7c5cbf; width: fit-content; }
+.back-link:hover { text-decoration: underline; }
+
+.detail-header { display: flex; flex-direction: column; gap: 6px; }
+.detail-header h1 { font-size: 30px; font-weight: 700; color: #c4b5fd; }
+.detail-desc { font-size: 15px; color: #8888bb; }
+.detail-meta { font-size: 12px; color: #5555aa; }
+
+.members-section { display: flex; flex-direction: column; gap: 16px; }
+.members-section h2 { font-size: 18px; color: #a78bfa; }
+.count { font-size: 14px; color: #6666aa; font-weight: 400; }
+
+.add-member-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 600px;
+}
+.add-member-form input { flex: 1; min-width: 140px; }
+
+.btn-primary { background: #7c3aed; color: #fff; white-space: nowrap; }
+
+.empty { color: #6666aa; font-size: 14px; }
+
+.members-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #13132a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 600px;
+}
+
+.member-info { display: flex; flex-direction: column; gap: 2px; }
+.member-name { font-size: 15px; font-weight: 500; color: #e0e0f0; }
+.member-role { font-size: 12px; color: #6666aa; }
+
+.btn-danger-sm { background: #4a1a2a; color: #f87171; padding: 6px 12px; font-size: 12px; }
