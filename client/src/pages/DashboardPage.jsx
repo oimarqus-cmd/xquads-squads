@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
   PieChart, Pie, Legend,
@@ -50,12 +50,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const location = useLocation();
 
   useEffect(() => {
+    setLoading(true);
     fetch('/api/stats', { headers: authHeaders() })
       .then(r => r.json())
       .then(data => { setStats(data); setLoading(false); });
-  }, []);
+  }, [location.key]);
 
   if (loading) return <p className="loading">Loading stats...</p>;
 
