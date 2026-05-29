@@ -144,10 +144,10 @@ export default function SquadDetailPage() {
   if (!squad) return <p className="loading">Squad not found. <Link to="/squads">Go back</Link></p>;
 
   return (
-    <div className="detail-page">
+    <div className="detail-page" style={accentColor ? { '--card-accent': accentColor } : {}}>
       <Link to="/squads" className="back-link">← All Squads</Link>
 
-      <div className="detail-header" style={accentColor ? { '--card-accent': accentColor } : {}}>
+      <div className="detail-header">
         <InlineEdit value={squad.name} className="squad-title" onSave={val => updateSquad({ name: val })} />
         <InlineEdit value={squad.description} className="detail-desc" multiline placeholder="Add a description..." onSave={val => updateSquad({ description: val })} />
         <span className="detail-meta">Created {new Date(squad.created_at).toLocaleDateString()}</span>
