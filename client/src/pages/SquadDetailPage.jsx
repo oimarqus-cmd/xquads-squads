@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { getToken } from '../context/AuthContext';
+import { getToken, useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
 import TagChip from '../components/TagChip';
@@ -24,6 +24,7 @@ function Highlight({ text, query }) {
 }
 
 export default function SquadDetailPage() {
+  const { logout } = useAuth();
   const { id } = useParams();
   const [squad, setSquad] = useState(null);
   const [memberName, setMemberName] = useState('');
@@ -37,7 +38,7 @@ export default function SquadDetailPage() {
 
   useEffect(() => {
     fetch(`/api/squads/${id}`, { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : null)
+      .then(r => { if (r.status === 401) { logout(); return null; } return r.ok ? r.json() : null; })
       .then(data => { setSquad(data); setLoading(false); });
   }, [id, location.key]);
 

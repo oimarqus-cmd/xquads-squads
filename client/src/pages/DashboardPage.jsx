@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
   PieChart, Pie, Legend,
 } from 'recharts';
-import { getToken } from '../context/AuthContext';
+import { getToken, useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { tagChartColor } from '../utils/tagColor';
 import './DashboardPage.css';
@@ -52,10 +52,12 @@ export default function DashboardPage() {
   const isDark = theme === 'dark';
   const location = useLocation();
 
+  const { logout } = useAuth();
+
   useEffect(() => {
     fetch('/api/stats', { headers: authHeaders() })
-      .then(r => r.json())
-      .then(data => { setStats(data); setLoading(false); });
+      .then(r => { if (r.status === 401) { logout(); return null; } return r.json(); })
+      .then(data => { if (data && !data.error) { setStats(data); setLoading(false); } });
   }, [location.key]);
 
   if (loading) return <p className="loading">Loading stats...</p>;

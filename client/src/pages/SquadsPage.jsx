@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { getToken } from '../context/AuthContext';
+import { getToken, useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
 import TagChip from '../components/TagChip';
@@ -16,6 +16,7 @@ function authHeaders() {
 export default function SquadsPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { logout } = useAuth();
   const location = useLocation();
   const [squads, setSquads] = useState([]);
   const [name, setName] = useState('');
@@ -30,8 +31,8 @@ export default function SquadsPage() {
 
   useEffect(() => {
     fetch('/api/squads', { headers: authHeaders() })
-      .then(r => r.json())
-      .then(data => { setSquads(data); setLoading(false); });
+      .then(r => { if (r.status === 401) { logout(); return null; } return r.json(); })
+      .then(data => { if (Array.isArray(data)) { setSquads(data); setLoading(false); } });
   }, [location.key]);
 
   useEffect(() => { setPage(1); }, [search, filter, sort, pageSize, activeTag]);
