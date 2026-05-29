@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
 import TagChip from '../components/TagChip';
+import { tagChartColor } from '../utils/tagColor';
 import './SquadsPage.css';
 
 const PAGE_SIZE_OPTIONS = [6, 12, 24];
@@ -12,6 +14,8 @@ function authHeaders() {
 }
 
 export default function SquadsPage() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [squads, setSquads] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -215,8 +219,10 @@ export default function SquadsPage() {
           </div>
 
           <div className="squad-grid">
-            {paginated.map(squad => (
-              <div key={squad.id} className="squad-card">
+            {paginated.map(squad => {
+              const accentColor = squad.tags?.length > 0 ? tagChartColor(squad.tags[0].name, isDark) : null;
+              return (
+              <div key={squad.id} className="squad-card" style={accentColor ? { '--card-accent': accentColor } : {}}>
                 <div className="squad-card-body">
                   {search ? (
                     <Link to={`/squads/${squad.id}`} className="squad-name">
@@ -256,7 +262,8 @@ export default function SquadsPage() {
                   <button className="btn-danger" onClick={() => deleteSquad(squad.id)}>Delete</button>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
 
           {totalPages > 1 && (

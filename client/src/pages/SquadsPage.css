@@ -201,6 +201,7 @@
 .squad-card {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--card-accent, var(--border));
   border-radius: 12px;
   padding: 18px;
   display: flex;
@@ -208,7 +209,7 @@
   gap: 14px;
   transition: border-color 0.2s, background 0.2s;
 }
-.squad-card:hover { border-color: var(--border-accent); }
+.squad-card:hover { border-color: var(--card-accent, var(--border-accent)); }
 
 .squad-card-body { display: flex; flex-direction: column; gap: 6px; }
 .squad-name { font-size: 17px; font-weight: 600; color: var(--accent-strong); }
