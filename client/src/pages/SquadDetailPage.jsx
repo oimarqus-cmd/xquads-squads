@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
@@ -33,11 +33,14 @@ export default function SquadDetailPage() {
   const [page, setPage] = useState(1);
   const [tagInput, setTagInput] = useState('');
 
+  const location = useLocation();
+
   useEffect(() => {
+    setLoading(true);
     fetch(`/api/squads/${id}`, { headers: authHeaders() })
       .then(r => r.ok ? r.json() : null)
       .then(data => { setSquad(data); setLoading(false); });
-  }, [id]);
+  }, [id, location.key]);
 
   useEffect(() => { setPage(1); }, [search]);
 
