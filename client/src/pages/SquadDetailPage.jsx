@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
 import TagChip from '../components/TagChip';
+import { tagChartColor } from '../utils/tagColor';
 import './SquadDetailPage.css';
 
 const PAGE_SIZE = 10;
@@ -135,6 +137,9 @@ export default function SquadDetailPage() {
     return pages;
   }
 
+  const { theme } = useTheme();
+  const accentColor = squad?.tags?.length > 0 ? tagChartColor(squad.tags[0].name, theme === 'dark') : null;
+
   if (loading) return <p className="loading">Loading...</p>;
   if (!squad) return <p className="loading">Squad not found. <Link to="/squads">Go back</Link></p>;
 
@@ -142,7 +147,7 @@ export default function SquadDetailPage() {
     <div className="detail-page">
       <Link to="/squads" className="back-link">← All Squads</Link>
 
-      <div className="detail-header">
+      <div className="detail-header" style={accentColor ? { '--card-accent': accentColor } : {}}>
         <InlineEdit value={squad.name} className="squad-title" onSave={val => updateSquad({ name: val })} />
         <InlineEdit value={squad.description} className="detail-desc" multiline placeholder="Add a description..." onSave={val => updateSquad({ description: val })} />
         <span className="detail-meta">Created {new Date(squad.created_at).toLocaleDateString()}</span>

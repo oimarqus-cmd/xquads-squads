@@ -3,7 +3,14 @@
 .back-link { font-size: 14px; color: var(--accent); width: fit-content; }
 .back-link:hover { text-decoration: underline; }
 
-.detail-header { display: flex; flex-direction: column; gap: 6px; }
+.detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 3px solid var(--card-accent, transparent);
+  padding-left: 14px;
+  transition: border-color 0.3s;
+}
 
 .squad-title {
   font-size: 30px;
