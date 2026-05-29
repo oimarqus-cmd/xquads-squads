@@ -22,6 +22,117 @@
 
 .loading, .empty { color: var(--text-muted); font-size: 14px; }
 
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 200px;
+  max-width: 340px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  color: var(--text-muted);
+  padding: 0;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clear-btn:hover { color: var(--text); opacity: 1; background: var(--surface-hover); }
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 12px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.pill:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.pill-active {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.sort-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: auto;
+}
+.sort-select:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+.clear-filters {
+  background: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 5px 10px;
+  text-decoration: underline;
+}
+.clear-filters:hover { color: var(--text); opacity: 1; }
+
+.results-count {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.highlight {
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+  color: var(--accent-strong);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
 .squad-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
