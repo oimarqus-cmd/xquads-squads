@@ -44,6 +44,49 @@
 
 .btn-danger-sm { background: var(--danger-bg); color: var(--danger-text); padding: 6px 12px; font-size: 12px; }
 
+.member-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.member-search {
+  padding-left: 32px;
+  padding-right: 32px;
+  max-width: 600px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  color: var(--text-muted);
+  padding: 0;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clear-btn:hover { color: var(--text); opacity: 1; background: var(--surface-hover); }
+
+.highlight {
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+  color: var(--accent-strong);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
 .members-meta { font-size: 13px; color: var(--text-faint); }
 
 .pagination {
