@@ -53,7 +53,6 @@ export default function DashboardPage() {
   const location = useLocation();
 
   useEffect(() => {
-    setLoading(true);
     fetch('/api/stats', { headers: authHeaders() })
       .then(r => r.json())
       .then(data => { setStats(data); setLoading(false); });

@@ -36,7 +36,6 @@ export default function SquadDetailPage() {
   const location = useLocation();
 
   useEffect(() => {
-    setLoading(true);
     fetch(`/api/squads/${id}`, { headers: authHeaders() })
       .then(r => r.ok ? r.json() : null)
       .then(data => { setSquad(data); setLoading(false); });

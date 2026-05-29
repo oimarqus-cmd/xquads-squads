@@ -29,7 +29,6 @@ export default function SquadsPage() {
   const [pageSize, setPageSize] = useState(6);
 
   useEffect(() => {
-    setLoading(true);
     fetch('/api/squads', { headers: authHeaders() })
       .then(r => r.json())
       .then(data => { setSquads(data); setLoading(false); });
