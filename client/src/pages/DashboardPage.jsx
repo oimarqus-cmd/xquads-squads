@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
+  PieChart, Pie, Legend,
+} from 'recharts';
 import { getToken } from '../context/AuthContext';
 import './DashboardPage.css';
 
@@ -7,12 +11,34 @@ function authHeaders() {
   return { Authorization: `Bearer ${getToken()}` };
 }
 
+const PURPLE_SHADES = ['#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe', '#6d28d9', '#5b21b6'];
+
 function StatCard({ label, value, sub }) {
   return (
     <div className="stat-card">
       <span className="stat-value">{value}</span>
       <span className="stat-label">{label}</span>
       {sub && <span className="stat-sub">{sub}</span>}
+    </div>
+  );
+}
+
+function CustomTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="chart-tooltip">
+      <p className="tooltip-label">{label}</p>
+      <p className="tooltip-value">{payload[0].value} {payload[0].name}</p>
+    </div>
+  );
+}
+
+function PieTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="chart-tooltip">
+      <p className="tooltip-label">{payload[0].name}</p>
+      <p className="tooltip-value">{payload[0].value}</p>
     </div>
   );
 }
@@ -29,6 +55,11 @@ export default function DashboardPage() {
 
   if (loading) return <p className="loading">Loading stats...</p>;
 
+  const squadStatusData = [
+    { name: 'Active', value: stats.totalSquads - stats.emptySquads },
+    { name: 'Empty', value: stats.emptySquads },
+  ];
+
   return (
     <div className="dashboard">
       <div className="page-header">
@@ -39,11 +70,77 @@ export default function DashboardPage() {
         <StatCard label="Total Squads" value={stats.totalSquads} />
         <StatCard label="Total Members" value={stats.totalMembers} />
         <StatCard label="Avg Members / Squad" value={stats.avgMembers} />
-        <StatCard
-          label="Empty Squads"
-          value={stats.emptySquads}
-          sub="squads with no members"
-        />
+        <StatCard label="Empty Squads" value={stats.emptySquads} sub="squads with no members" />
+      </div>
+
+      <div className="charts-row">
+        <div className="dashboard-panel">
+          <h2>Members per Squad</h2>
+          {stats.membersBySquad.length === 0 ? (
+            <p className="empty">No data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={stats.membersBySquad} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                <XAxis dataKey="name" tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} />
+                <YAxis allowDecimals={false} tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1e1e38' }} />
+                <Bar dataKey="members" name="members" radius={[4, 4, 0, 0]}>
+                  {stats.membersBySquad.map((_, i) => (
+                    <Cell key={i} fill={PURPLE_SHADES[i % PURPLE_SHADES.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div className="dashboard-panel">
+          <h2>Squad Status</h2>
+          {stats.totalSquads === 0 ? (
+            <p className="empty">No squads yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={squadStatusData}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  <Cell fill="#7c3aed" />
+                  <Cell fill="#2a2a4a" />
+                </Pie>
+                <Tooltip content={<PieTooltip />} />
+                <Legend
+                  iconType="circle"
+                  iconSize={8}
+                  formatter={val => <span style={{ color: '#8888bb', fontSize: 13 }}>{val}</span>}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {stats.roleDistribution.length > 0 && (
+          <div className="dashboard-panel">
+            <h2>Members by Role</h2>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={stats.roleDistribution} layout="vertical" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <XAxis type="number" allowDecimals={false} tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="role" tick={{ fill: '#8888bb', fontSize: 12 }} tickLine={false} axisLine={false} width={80} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1e1e38' }} />
+                <Bar dataKey="count" name="members" radius={[0, 4, 4, 0]}>
+                  {stats.roleDistribution.map((_, i) => (
+                    <Cell key={i} fill={PURPLE_SHADES[i % PURPLE_SHADES.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
       <div className="dashboard-row">
@@ -57,7 +154,13 @@ export default function DashboardPage() {
                 <li key={s.id} className="top-squad-item">
                   <span className="rank">#{i + 1}</span>
                   <Link to={`/squads/${s.id}`} className="top-squad-name">{s.name}</Link>
-                  <span className="top-squad-count">{s.member_count} member{s.member_count !== 1 ? 's' : ''}</span>
+                  <div className="top-squad-bar-wrap">
+                    <div
+                      className="top-squad-bar"
+                      style={{ width: `${stats.topSquads[0].member_count > 0 ? (s.member_count / stats.topSquads[0].member_count) * 100 : 0}%` }}
+                    />
+                  </div>
+                  <span className="top-squad-count">{s.member_count}</span>
                 </li>
               ))}
             </ul>
@@ -67,20 +170,20 @@ export default function DashboardPage() {
         <div className="dashboard-panel">
           <h2>Highlights</h2>
           <div className="highlights">
-            {stats.largestSquad ? (
+            {stats.largestSquad && (
               <div className="highlight-item">
                 <span className="highlight-label">Largest squad</span>
                 <span className="highlight-value">{stats.largestSquad.name}</span>
                 <span className="highlight-sub">{stats.largestSquad.member_count} members</span>
               </div>
-            ) : null}
-            {stats.newestSquad ? (
+            )}
+            {stats.newestSquad && (
               <div className="highlight-item">
                 <span className="highlight-label">Newest squad</span>
                 <span className="highlight-value">{stats.newestSquad.name}</span>
                 <span className="highlight-sub">Created {new Date(stats.newestSquad.created_at).toLocaleDateString()}</span>
               </div>
-            ) : null}
+            )}
             {!stats.largestSquad && !stats.newestSquad && (
               <p className="empty">Create some squads to see highlights.</p>
             )}

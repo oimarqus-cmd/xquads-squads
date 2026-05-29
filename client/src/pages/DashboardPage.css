@@ -37,6 +37,21 @@
   color: #5555aa;
 }
 
+.charts-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.chart-tooltip {
+  background: #1e1e38;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.tooltip-label { font-size: 12px; color: #8888bb; margin-bottom: 2px; }
+.tooltip-value { font-size: 14px; font-weight: 600; color: #c4b5fd; }
+
 .dashboard-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -44,7 +59,21 @@
 }
 
 @media (max-width: 640px) {
-  .dashboard-row { grid-template-columns: 1fr; }
+  .charts-row, .dashboard-row { grid-template-columns: 1fr; }
+}
+
+.top-squad-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: #1e1e38;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.top-squad-bar {
+  height: 100%;
+  background: #7c3aed;
+  border-radius: 3px;
+  transition: width 0.4s ease;
 }
 
 .dashboard-panel {
