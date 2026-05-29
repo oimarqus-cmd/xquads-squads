@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { getToken } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import InlineEdit from '../components/InlineEdit';
@@ -16,6 +16,7 @@ function authHeaders() {
 export default function SquadsPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const location = useLocation();
   const [squads, setSquads] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -28,10 +29,11 @@ export default function SquadsPage() {
   const [pageSize, setPageSize] = useState(6);
 
   useEffect(() => {
+    setLoading(true);
     fetch('/api/squads', { headers: authHeaders() })
       .then(r => r.json())
       .then(data => { setSquads(data); setLoading(false); });
-  }, []);
+  }, [location.key]);
 
   useEffect(() => { setPage(1); }, [search, filter, sort, pageSize, activeTag]);
 
